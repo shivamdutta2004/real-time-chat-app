@@ -19,18 +19,16 @@
 
 <script>
 function joinChat() {
-  const username = document.getElementById("username").value;
-  const room = document.getElementById("room").value;
+  const username = document.getElementById("username").value.trim();
+  const room = document.getElementById("room").value.trim();
 
   if (!username || !room) {
     alert("Please fill all fields");
     return;
   }
 
-  localStorage.setItem("username", username);
-  localStorage.setItem("room", room);
-
-  window.location.href = "chat.html";
+  // Redirect with URL parameters (FIXED)
+  window.location.href = `chat.html?username=${encodeURIComponent(username)}&room=${encodeURIComponent(room)}`;
 }
 </script>
 

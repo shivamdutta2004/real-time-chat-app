@@ -9,22 +9,39 @@
 
 <div class="chat-container">
 
-  <!-- Sidebar -->
+  <!-- ================= SIDEBAR ================= -->
   <div class="sidebar">
     <h2>💬 Chat App</h2>
+
     <p><strong>User:</strong> <span id="username-display"></span></p>
     <p><strong>Room:</strong> <span id="room-display"></span></p>
+
+    <hr>
+
+    <!-- Private Chat -->
+    <h3>👤 Private Chat</h3>
+    <input id="privateUser" placeholder="Enter username..." />
+    <button onclick="startPrivateChat()">Start Chat</button>
+
+    <hr>
+
+    <!-- Online Users -->
+    <h3>🟢 Online Users</h3>
+    <ul id="online-users"></ul>
   </div>
 
-  <!-- Chat Section -->
+  <!-- ================= CHAT AREA ================= -->
   <div class="chat-main">
 
+    <!-- Header -->
     <div class="chat-header">
       <h3 id="chat-room-title"></h3>
     </div>
 
+    <!-- Messages -->
     <div id="chat-box"></div>
 
+    <!-- Input -->
     <div class="chat-input">
       <input id="message" placeholder="Type a message..." />
       <button onclick="sendMessage()">Send</button>

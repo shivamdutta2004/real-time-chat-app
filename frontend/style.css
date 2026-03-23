@@ -26,10 +26,44 @@ body {
 }
 
 .sidebar h2 {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-/* Chat Area */
+.sidebar h3 {
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+.sidebar input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 5px;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 8px;
+  background: #00a884;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Online users */
+#online-users {
+  list-style: none;
+  margin-top: 10px;
+}
+
+#online-users li {
+  padding: 5px 0;
+  color: #00d084;
+}
+
+/* Chat Main */
 .chat-main {
   width: 75%;
   display: flex;
@@ -53,18 +87,17 @@ body {
   flex-direction: column;
 }
 
-/* Message Container */
+/* Message */
 .message {
   max-width: 60%;
   padding: 10px 14px;
   margin: 8px 0;
   border-radius: 10px;
-  position: relative;
   font-size: 14px;
-  line-height: 1.4;
+  position: relative;
 }
 
-/* Sent (Right side) */
+/* Sent */
 .sent {
   align-self: flex-end;
   background: #005c4b;
@@ -72,7 +105,7 @@ body {
   border-bottom-right-radius: 2px;
 }
 
-/* Received (Left side) */
+/* Received */
 .received {
   align-self: flex-start;
   background: #ffffff;
@@ -84,7 +117,7 @@ body {
 .message strong {
   font-size: 12px;
   display: block;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   opacity: 0.7;
 }
 

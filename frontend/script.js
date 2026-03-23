@@ -1,16 +1,30 @@
 // ================= SOCKET CONNECTION =================
 const socket = io("http://localhost:5000");
 
-// ================= USER DATA =================
-const username = localStorage.getItem("username");
-const room = localStorage.getItem("room");
+// ================= GET USER DATA FROM URL =================
+const params = new URLSearchParams(window.location.search);
+
+const username = params.get("username");
+const room = params.get("room");
+
+// ================= SAFETY CHECK =================
+if (!username || !room) {
+  alert("Invalid access. Please join again.");
+  window.location.href = "index.html";
+}
+
+// ================= CURRENT ROOM =================
+let currentRoom = room;
 
 // ================= UI SETUP =================
 document.getElementById("username-display").innerText = username;
 document.getElementById("room-display").innerText = room;
 document.getElementById("chat-room-title").innerText = room;
 
-// ================= JOIN ROOM =================
+// ================= REGISTER USER (ONLINE USERS) =================
+socket.emit("registerUser", username);
+
+// ================= JOIN GROUP ROOM =================
 socket.emit("joinRoom", room);
 
 // ================= SEND MESSAGE =================
@@ -23,7 +37,7 @@ function sendMessage() {
   const data = {
     username,
     message,
-    room,
+    room: currentRoom,
     time: new Date().toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit"
@@ -34,8 +48,8 @@ function sendMessage() {
   input.value = "";
 }
 
-// Send message on Enter key
-document.getElementById("message").addEventListener("keypress", function (e) {
+// ================= ENTER KEY SUPPORT =================
+document.getElementById("message").addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     sendMessage();
   }
@@ -49,11 +63,9 @@ socket.on("receiveMessage", (data) => {
 // ================= LOAD CHAT HISTORY =================
 socket.on("chatHistory", (messages) => {
   const chatBox = document.getElementById("chat-box");
-  chatBox.innerHTML = ""; // clear old
+  chatBox.innerHTML = "";
 
-  messages.forEach(msg => {
-    displayMessage(msg);
-  });
+  messages.forEach(msg => displayMessage(msg));
 });
 
 // ================= DISPLAY MESSAGE =================
@@ -63,7 +75,6 @@ function displayMessage(data) {
   const messageDiv = document.createElement("div");
   messageDiv.classList.add("message");
 
-  // Align messages
   if (data.username === username) {
     messageDiv.classList.add("sent");
   } else {
@@ -77,7 +88,47 @@ function displayMessage(data) {
   `;
 
   chatBox.appendChild(messageDiv);
-
-  // Auto scroll
   chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+// ================= PRIVATE CHAT =================
+function startPrivateChat() {
+  const otherUser = document.getElementById("privateUser").value.trim();
+
+  if (!otherUser) {
+    alert("Enter username for private chat");
+    return;
+  }
+
+  const privateRoom = [username, otherUser].sort().join("_");
+
+  // Clear chat
+  document.getElementById("chat-box").innerHTML = "";
+
+  // Update UI
+  document.getElementById("chat-room-title").innerText = `Private: ${otherUser}`;
+
+  // Join private room
+  socket.emit("joinPrivateChat", {
+    user1: username,
+    user2: otherUser
+  });
+
+  // Switch room
+  currentRoom = privateRoom;
+}
+
+// ================= ONLINE USERS =================
+socket.on("onlineUsers", (users) => {
+  const list = document.getElementById("online-users");
+
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  users.forEach(user => {
+    const li = document.createElement("li");
+    li.innerText = user;
+    list.appendChild(li);
+  });
+});
